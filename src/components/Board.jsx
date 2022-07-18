@@ -23,8 +23,10 @@ export const Board = () => {
         cells: newCells,
       }));
     } else {
+      let o = 1;
+      const c = cell;
       newCells[cell.y][cell.x].revealed = true;
-
+      newCells[cell.y][cell.x].order = o;
       const revealNeighbors = (cell) => {
         if (cell.total === 0) {
           for (let i = cell.y - 1; i <= cell.y + 1; i++) {
@@ -36,9 +38,21 @@ export const Board = () => {
                   !newCells[i][j].flagged
                 ) {
                   newCells[i][j].revealed = true;
+                  // get distance from clicked cell
+                  const distance = Math.floor(
+                    Math.sqrt(Math.pow(i - c.y, 2) + Math.pow(j - c.x, 2))
+                  );
+
+                  newCells[i][j].order = Math.floor(distance * o++);
+
                   revealNeighbors(newCells[i][j]);
                 } else if (newCells[i][j].total > 0) {
+                  const distance = Math.floor(
+                    Math.sqrt(Math.pow(i - c.y, 2) + Math.pow(j - c.x, 2))
+                  );
+
                   newCells[i][j].revealed = true;
+                  newCells[i][j].order = Math.floor(distance * o++);
                 }
               }
             }
@@ -47,11 +61,19 @@ export const Board = () => {
       };
 
       revealNeighbors(newCells[cell.y][cell.x]);
+      // if all cells revealed are not bees, game over
 
       setBoard((state) => ({
         ...state,
         newCells,
       }));
+      if (
+        newCells.every((row) =>
+          row.every((cell) => cell.revealed || cell.isBee)
+        )
+      ) {
+        console.log("game over");
+      }
     }
   };
 
@@ -125,6 +147,9 @@ export const Board = () => {
                 onClick={() => {
                   handleClick(cell);
                 }}
+                style={{
+                  "--order": `${cell.order ? cell.order : j}`,
+                }}
                 onContextMenu={(e) => {
                   e.preventDefault();
                   if (!cell.revealed) {
@@ -138,7 +163,7 @@ export const Board = () => {
                 }}
               >
                 {cell.revealed && cell.isBee && (
-                  <div className={styles.bee}>🐝</div>
+                  <div className={styles.bee}></div>
                 )}
                 {cell.revealed && cell.total > 0 && (
                   <div className={styles.total}>{cell.total}</div>

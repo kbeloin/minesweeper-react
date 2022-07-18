@@ -71,6 +71,7 @@ export default function Game() {
 
   return (
     <div className="game">
+      <div className="game-info"></div>
       <div className="game-board">
         {gameState.gameStarted && (
           <GameContext.Provider value={{ cols, rows, bees, setGameState, i }}>
@@ -78,8 +79,12 @@ export default function Game() {
           </GameContext.Provider>
         )}
       </div>
-      <div className="game-info">
-        <form className={styles.form}>
+      <div className={"game-info"}>
+        <form
+          className={`${styles.form} ${
+            gameState.gameStarted ? styles.row : ""
+          }`}
+        >
           {!gameState.gameStarted && (
             <>
               <label>
