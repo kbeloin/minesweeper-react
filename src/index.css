@@ -38,3 +38,13 @@ input {
   min-width: 200px;
   width: 200px;
 }
+
+.App-body {
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  max-width: 800px;
+}

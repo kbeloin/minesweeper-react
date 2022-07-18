@@ -3,7 +3,7 @@ import { GameContext } from "./Game";
 import styles from "./Board.module.css";
 
 export const Board = () => {
-  const { cols, rows, bees, i } = useContext(GameContext);
+  const { cols, rows, bees, i, setGameState } = useContext(GameContext);
   const [{ cells }, setBoard] = useState({
     cells: [],
   });
@@ -21,6 +21,11 @@ export const Board = () => {
       setBoard((state) => ({
         ...state,
         cells: newCells,
+      }));
+      setGameState((state) => ({
+        ...state,
+        gameOver: true,
+        gameWon: false,
       }));
     } else {
       let o = 1;
@@ -72,7 +77,10 @@ export const Board = () => {
           row.every((cell) => cell.revealed || cell.isBee)
         )
       ) {
-        console.log("game over");
+        setGameState((state) => ({
+          ...state,
+          gameWon: true,
+        }));
       }
     }
   };
@@ -147,6 +155,7 @@ export const Board = () => {
                 onClick={() => {
                   handleClick(cell);
                 }}
+                tabIndex={0}
                 style={{
                   "--order": `${cell.order ? cell.order : j}`,
                 }}

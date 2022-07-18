@@ -1,23 +1,22 @@
 import { createContext, useState } from "react";
+import styles from "./Game.module.css";
 import Board from "./Board";
-import styles from "./Board.module.css";
+import Timer from "./Timer";
+import Setup from "./Setup";
 
 export const GameContext = createContext();
 
 let i = 0;
 
 export default function Game() {
-  const [settings, setSettings] = useState({
-    cols: 15,
-    rows: 15,
-    bees: 20,
-  });
-
   const [{ cols, rows, bees }, setGame] = useState({
     cols: 15,
     rows: 10,
     bees: 10,
   });
+
+  const [gameHistory, setGameHistory] = useState([]);
+  const [time, setTime] = useState(0);
 
   const [gameState, setGameState] = useState({
     gameOver: false,
@@ -25,103 +24,80 @@ export default function Game() {
     gameStarted: false,
   });
 
-  const handleChange = (e) => {
-    e.preventDefault();
-
-    // convert the value of the input to a number
-    setSettings((state) => ({
+  const newGame = ({ attempt, time, gameState }) => {
+    setGameHistory((state) => [
       ...state,
-      [e.target.name]: Number(e.target.value),
-    }));
-  };
-
-  const startGame = (e) => {
-    e.preventDefault();
-    setGame((state) => ({
-      ...state,
-      cols: settings.cols,
-      rows: settings.rows,
-      bees: settings.bees,
-    }));
-    setGameState((state) => ({
-      ...state,
-      gameStarted: true,
-      gameOver: false,
-      gameWon: false,
-    }));
+      { attempt: attempt, time: time, gameState },
+    ]);
     i++;
   };
-
-  const resetGame = (e) => {
-    e.preventDefault();
-    setGame((state) => ({
-      ...state,
-      cols: settings.cols,
-      rows: settings.rows,
-      bees: settings.bees,
-    }));
-    setGameState((state) => ({
-      ...state,
-      gameStarted: false,
-      gameOver: false,
-      gameWon: false,
-    }));
-    i = 0;
-  };
-
   return (
-    <div className="game">
-      <div className="game-info"></div>
-      <div className="game-board">
-        {gameState.gameStarted && (
-          <GameContext.Provider value={{ cols, rows, bees, setGameState, i }}>
-            <Board />
-          </GameContext.Provider>
-        )}
-      </div>
-      <div className={"game-info"}>
-        <form
-          className={`${styles.form} ${
-            gameState.gameStarted ? styles.row : ""
-          }`}
-        >
-          {!gameState.gameStarted && (
-            <>
-              <label>
-                Cols:
-                <input
-                  type="number"
-                  name="cols"
-                  onChange={handleChange}
-                  value={settings.cols}
-                />
-              </label>
-              <label>
-                Rows:
-                <input
-                  type="number"
-                  name="rows"
-                  onChange={handleChange}
-                  value={settings.rows}
-                />
-              </label>
-              <label>
-                Bees:
-                <input
-                  type="number"
-                  name="bees"
-                  onChange={handleChange}
-                  value={settings.bees}
-                />
-              </label>
-            </>
+    <>
+      {gameState.gameStarted && (
+        <div className={styles.history}>
+          <h2>Game History</h2>
+
+          {/* Skip the first */}
+          {gameHistory &&
+            gameHistory.length > 1 &&
+            gameHistory.slice(1).map((game, index) => (
+              <div key={`history-${index}`}>
+                <div className={styles["history-item"]}>
+                  <div>
+                    {/* long dash*/}
+                    {game.attempt}
+                  </div>
+                  <div>
+                    {/* long dash*/}
+                    &nbsp;&mdash;&nbsp;
+                  </div>
+                  <div>
+                    {`${Math.floor(game.time / 60)}:${
+                      game.time % 60 < 10 ? "0" : ""
+                    }${game.time % 60}`}
+                  </div>
+                  <div>
+                    {/* long dash*/}
+                    &nbsp;&mdash;&nbsp;
+                  </div>
+                  <div>
+                    {game.gameState.gameOver
+                      ? "L"
+                      : gameState.gameWon
+                      ? "W"
+                      : "NC"}
+                  </div>
+                </div>
+                <hr />
+              </div>
+            ))}
+        </div>
+      )}
+
+      <div className={styles.game}>
+        <div className={styles["game-info"]}>
+          <div className={styles.header}>
+            {gameState.gameStarted && <h2>{`Board ${i}`}</h2>}
+            {gameState.gameStarted && gameState.gameWon && <h2>: Win</h2>}
+            {gameState.gameStarted && gameState.gameOver && <h2>: Loss</h2>}
+          </div>
+          {gameState.gameStarted && <Timer time={time} setTime={setTime} />}
+        </div>
+        <div className="game-board">
+          {gameState.gameStarted && (
+            <GameContext.Provider value={{ cols, rows, bees, setGameState, i }}>
+              <Board />
+            </GameContext.Provider>
           )}
-          <button onClick={startGame}>
-            {gameState.gameStarted ? "Restart" : "Start"}
-          </button>
-          <button onClick={resetGame}>Reset</button>
-        </form>
+        </div>
+        <div className={"game-info"}>
+          <GameContext.Provider
+            value={{ setGame, setGameState, gameState, newGame, time, i }}
+          >
+            <Setup />
+          </GameContext.Provider>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
