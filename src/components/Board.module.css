@@ -60,7 +60,7 @@
   transform: scale(1.1);
   animation: scale-in 0.5s ease-in;
   animation-fill-mode: both;
-  animation-delay: calc(var(--order) * 0.075ms);
+  animation-delay: calc(var(--order) * 0.2ms);
 }
 
 .bee {
