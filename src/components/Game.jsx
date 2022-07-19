@@ -63,7 +63,7 @@ export default function Game() {
                   <div>
                     {game.gameState.gameOver
                       ? "L"
-                      : gameState.gameWon
+                      : game.gameState.gameWon
                       ? "W"
                       : "NC"}
                   </div>
