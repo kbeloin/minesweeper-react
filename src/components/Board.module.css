@@ -67,7 +67,7 @@
   width: 15px;
   height: 15px;
   border-radius: 50%;
-  outline: 5px solid white;
+  border: 2px solid white;
   background-color: #ff0000;
   opacity: 1;
 }
