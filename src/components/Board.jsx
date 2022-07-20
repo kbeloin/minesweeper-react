@@ -141,9 +141,24 @@ export const Board = () => {
     };
   }, [rows, cols, bees, i]);
 
+  const screenWidth = window.innerWidth;
+  const boardSize = cols * 30 + 22;
+
   return (
-    <div className={styles.container}>
-      <div className={styles.board} style={{ "--column-number": `${cols}` }}>
+    <div
+      className={styles.container}
+      style={{
+        transform: `scale(${
+          boardSize > screenWidth ? screenWidth / boardSize : 1
+        })`,
+      }}
+    >
+      <div
+        className={styles.board}
+        style={{
+          "--column-number": `${cols}`,
+        }}
+      >
         {cells &&
           cells.map((row, i) =>
             row.map((cell, j) => (

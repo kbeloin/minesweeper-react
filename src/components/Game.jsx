@@ -3,6 +3,7 @@ import styles from "./Game.module.css";
 import Board from "./Board";
 import Timer from "./Timer";
 import Setup from "./Setup";
+import Header from "./Header";
 
 export const GameContext = createContext();
 
@@ -40,40 +41,37 @@ export default function Game() {
           {/* Skip the first */}
           {gameHistory &&
             gameHistory.length > 1 &&
-            gameHistory
-              .slice(1)
-              .reverse()
-              .map((game, index) => (
-                <div key={`history-${index}`}>
-                  <div className={styles["history-item"]}>
-                    <div>
-                      {/* long dash*/}
-                      {game.attempt}
-                    </div>
-                    <div>
-                      {/* long dash*/}
-                      &nbsp;&mdash;&nbsp;
-                    </div>
-                    <div>
-                      {`${Math.floor(game.time / 60)}:${
-                        game.time % 60 < 10 ? "0" : ""
-                      }${game.time % 60}`}
-                    </div>
-                    <div>
-                      {/* long dash*/}
-                      &nbsp;&mdash;&nbsp;
-                    </div>
-                    <div>
-                      {game.gameState.gameOver
-                        ? "L"
-                        : game.gameState.gameWon
-                        ? "W"
-                        : "NC"}
-                    </div>
+            gameHistory.slice(1).map((game, index) => (
+              <div key={`history-${index}`}>
+                <div className={styles["history-item"]}>
+                  <div>
+                    {/* long dash*/}
+                    {game.attempt}
                   </div>
-                  <hr />
+                  <div>
+                    {/* long dash*/}
+                    &nbsp;&mdash;&nbsp;
+                  </div>
+                  <div>
+                    {`${Math.floor(game.time / 60)}:${
+                      game.time % 60 < 10 ? "0" : ""
+                    }${game.time % 60}`}
+                  </div>
+                  <div>
+                    {/* long dash*/}
+                    &nbsp;&mdash;&nbsp;
+                  </div>
+                  <div>
+                    {game.gameState.gameOver
+                      ? "L"
+                      : game.gameState.gameWon
+                      ? "W"
+                      : "NC"}
+                  </div>
                 </div>
-              ))}
+                <hr />
+              </div>
+            ))}
         </div>
       )}
 
@@ -83,6 +81,7 @@ export default function Game() {
             {gameState.gameStarted && <h2>{`Board ${i}`}</h2>}
             {gameState.gameStarted && gameState.gameWon && <h2>: Win</h2>}
             {gameState.gameStarted && gameState.gameOver && <h2>: Loss</h2>}
+            <Header />
           </div>
           {gameState.gameStarted && <Timer time={time} setTime={setTime} />}
         </div>
