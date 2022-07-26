@@ -1,9 +1,10 @@
 import { createContext, useState } from "react";
 import styles from "./Game.module.css";
 import Board from "./Board";
-import Timer from "./Timer";
 import Setup from "./Setup";
 import Header from "./Header";
+import History from "./History";
+import Dialog from "./Dialog";
 
 export const GameContext = createContext();
 
@@ -18,6 +19,7 @@ export default function Game() {
 
   const [gameHistory, setGameHistory] = useState([]);
   const [time, setTime] = useState(0);
+  const [showHistory, setShowHistory] = useState(false);
 
   const [gameState, setGameState] = useState({
     gameOver: false,
@@ -32,73 +34,74 @@ export default function Game() {
     ]);
     i++;
   };
+
+  const screenWidth = window.innerWidth;
+  const boardSize = cols * 30 + 22;
+
   return (
     <>
-      {gameState.gameStarted && (
-        <div className={styles.history}>
-          <h2>Card</h2>
-
-          {/* Skip the first */}
-          {gameHistory &&
-            gameHistory.length > 1 &&
-            gameHistory.slice(1).map((game, index) => (
-              <div key={`history-${index}`}>
-                <div className={styles["history-item"]}>
-                  <div>
-                    {/* long dash*/}
-                    {game.attempt}
-                  </div>
-                  <div>
-                    {/* long dash*/}
-                    &nbsp;&mdash;&nbsp;
-                  </div>
-                  <div>
-                    {`${Math.floor(game.time / 60)}:${
-                      game.time % 60 < 10 ? "0" : ""
-                    }${game.time % 60}`}
-                  </div>
-                  <div>
-                    {/* long dash*/}
-                    &nbsp;&mdash;&nbsp;
-                  </div>
-                  <div>
-                    {game.gameState.gameOver
-                      ? "L"
-                      : game.gameState.gameWon
-                      ? "W"
-                      : "NC"}
-                  </div>
-                </div>
-                <hr />
-              </div>
-            ))}
-        </div>
+      {showHistory && (
+        <GameContext.Provider
+          value={{
+            gameState,
+            setGameState,
+            newGame,
+            gameHistory,
+            setShowHistory,
+          }}
+        >
+          <History />
+        </GameContext.Provider>
       )}
-
-      <div className={styles.game}>
+      <div
+        className={styles.game}
+        style={{
+          "--board-height":
+            boardSize > screenWidth
+              ? `${boardSize * (screenWidth / boardSize)}px`
+              : "100%",
+          "--board-width":
+            boardSize > screenWidth
+              ? `${boardSize * (screenWidth / boardSize)}px`
+              : `${boardSize - 22}px`,
+        }}
+      >
         <div className={styles["game-info"]}>
-          <div className={styles.header}>
-            {gameState.gameStarted && <h2>{`Board ${i}`}</h2>}
-            {gameState.gameStarted && gameState.gameWon && <h2>: Win</h2>}
-            {gameState.gameStarted && gameState.gameOver && <h2>: Loss</h2>}
+          <GameContext.Provider
+            value={{ gameState, i, setShowHistory, showHistory, time, setTime }}
+          >
             <Header />
-          </div>
-          {gameState.gameStarted && <Timer time={time} setTime={setTime} />}
+          </GameContext.Provider>
         </div>
-        <div className="game-board">
+        <div className={styles["game-board"]}>
           {gameState.gameStarted && (
-            <GameContext.Provider value={{ cols, rows, bees, setGameState, i }}>
+            <GameContext.Provider
+              value={{ cols, rows, bees, setGameState, i, gameState }}
+            >
               <Board />
             </GameContext.Provider>
           )}
         </div>
-        <div className={"game-info"}>
+        <div className={styles["game-controls"]}>
           <GameContext.Provider
             value={{ setGame, setGameState, gameState, newGame, time, i }}
           >
             <Setup />
           </GameContext.Provider>
         </div>
+        <GameContext.Provider
+          value={{
+            setGame,
+            setGameState,
+            gameState,
+            newGame,
+            time,
+            setTime,
+            i,
+          }}
+        >
+          <Dialog />
+        </GameContext.Provider>
       </div>
     </>
   );

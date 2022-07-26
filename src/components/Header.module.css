@@ -1,3 +1,44 @@
 .header {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  margin: 0 auto;
+  max-width: 600px;
+  padding: 0;
+  width: 100%;
+}
+
+.icon {
   margin-left: auto;
+}
+
+.game-board-stats {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  max-width: 600px;
+  justify-content: space-between;
+  margin-bottom: 0.25em;
+  position: relative;
+}
+
+.button {
+  --button-height: 25px;
+  --button-width: 25px;
+  display: grid;
+  place-content: center;
+  height: var(--button-height);
+  width: var(--button-width);
+  border: none;
+  z-index: 5;
+  background-color: var(--background-color);
+  min-width: unset;
+  padding: 0;
+  outline: none;
+  cursor: pointer;
+  position: absolute;
+  left: 50%;
 }

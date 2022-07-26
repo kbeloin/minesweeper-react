@@ -1,3 +1,20 @@
+.button {
+  --button-height: 30px;
+  --button-width: 30px;
+  display: grid;
+  place-content: center;
+  height: var(--button-height);
+  width: var(--button-width);
+  border-radius: 50%;
+  z-index: 5;
+  background-color: var(--background-color);
+  border: 2px solid black;
+  min-width: unset;
+  padding: 0;
+  outline: none;
+  cursor: pointer;
+}
+
 .container {
   display: grid;
   place-content: center;
@@ -33,6 +50,10 @@
   place-content: center;
 }
 
+.board.disabled {
+  pointer-events: none;
+}
+
 .form {
   margin-top: 20px;
   display: flex;
@@ -41,11 +62,12 @@
   gap: 1em;
 }
 
-.row {
+.form.row {
+  margin-top: 0.75vh;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .total {

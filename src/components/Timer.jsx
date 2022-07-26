@@ -1,17 +1,21 @@
 import styles from "./Timer.module.css";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import { GameContext } from "./Game";
 
 export default function Timer({ time, setTime }) {
-  // esling-disable-next-line
+  const { gameState } = useContext(GameContext);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setTime(time + 1);
     }, 1000);
+    if (gameState.gameOver || gameState.gameWon) {
+      clearInterval(interval);
+    }
     return () => {
       clearInterval(interval);
     };
-  }, [time, setTime]);
+  }, [time, setTime, gameState]);
 
   return (
     <div className={styles.timer}>{

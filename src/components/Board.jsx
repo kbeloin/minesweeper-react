@@ -3,7 +3,8 @@ import { GameContext } from "./Game";
 import styles from "./Board.module.css";
 
 export const Board = () => {
-  const { cols, rows, bees, i, setGameState } = useContext(GameContext);
+  const { cols, rows, bees, i, setGameState, gameState } =
+    useContext(GameContext);
   const [{ cells }, setBoard] = useState({
     cells: [],
   });
@@ -154,7 +155,9 @@ export const Board = () => {
       }}
     >
       <div
-        className={styles.board}
+        className={`${styles.board} ${
+          gameState.gameOver || gameState.gameWon ? styles.disabled : ""
+        }`}
         style={{
           "--column-number": `${cols}`,
         }}

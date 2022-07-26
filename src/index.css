@@ -51,7 +51,7 @@ input {
   flex-direction: row;
   gap: 2em;
   margin: 0 auto;
-  padding: 2em;
+  padding: 0 2em;
   width: 100%;
   max-width: min(800px, 100vw);
   justify-content: center;
